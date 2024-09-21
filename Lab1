@@ -1,0 +1,97 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+//import java.math.BigDecimal;
+//import java.math.RoundingMode;
+
+public class NumberOperations {
+  public static void main(String[] args) {
+    
+    //Initialize array & Task 3
+    ArrayList<Number> Numbers = new ArrayList<>(Arrays.asList(10, 20.5, 30, 40.7, 50, 60.3, 70, 80.1, 90, 100.9));    
+
+    //Task 1: create numbers
+
+    byte n1 = 2;
+    short n2 = 111;
+    int n3 = 398;
+    long n4 = 28937L;
+    float n5 = 739.217f;
+    double n6 = 13245.9811;
+
+    //Task 2: add to the list
+    
+    Numbers.addAll(Arrays.asList(n1, n2, n3, n4, n5, n6));
+
+    //Task 4: print array
+
+    System.out.println("Initial Array: " + Numbers);
+
+    //Task 5: print integers
+
+    ArrayList<Integer> Integers1 = new ArrayList<>();
+    Numbers.forEach(i -> Integers1.add((int)Math.round(i.doubleValue())));
+    System.out.println("Integer Array: " + Integers1);
+
+    //Task 6: print num.xx
+    //Variant 1
+
+    ArrayList<String> Floats1 = new ArrayList<>();
+    Numbers.forEach(i -> Floats1.add(String.format("%.2f", i.doubleValue())));
+    System.out.println("2 d.p. Array: " + Floats1);
+
+    //Variant 2
+
+    // ArrayList<BigDecimal> Floats2 = new ArrayList<>();
+    // for (Number i: Numbers) {
+    //   BigDecimal n = new BigDecimal(i.toString());
+    //   BigDecimal nn = n.setScale(2, RoundingMode.HALF_EVEN);
+    //   Floats2.add(nn);
+    // }
+    // System.out.println("2 d.p. Array: " + Floats2);
+
+    //Variant 3
+
+    // ArrayList<Double> Floats3 = new ArrayList<>();
+    // Numbers.forEach(i -> Floats3.add(Double.parseDouble(String.format("%.2f", i.doubleValue()))));
+    // System.out.println("2 d.p. Array: " + Floats3);
+
+
+    //Task 7: differrent arrays
+    ArrayList<Byte> Bytes = new ArrayList<>();
+    ArrayList<Short> Shorts = new ArrayList<>();
+    ArrayList<Integer> Integers = new ArrayList<>();
+    ArrayList<Long> Longs = new ArrayList<>();
+    ArrayList<Float> Floats = new ArrayList<>();
+    ArrayList<Double> Doubles = new ArrayList<>();
+
+    for (Number i: Numbers) {
+      if (i instanceof Byte) {
+        Bytes.add((Byte) i);
+      } else if (i instanceof Short) {
+        Shorts.add((Short) i);
+      } else if (i instanceof Integer) {
+        Integers.add((Integer) i);
+      } else if (i instanceof Long) {
+        Longs.add((Long) i);
+      } else if (i instanceof Float) {
+        Floats.add((Float) i);
+      } else if (i instanceof Double) {
+        Doubles.add((Double) i);
+      }
+    }
+
+    System.out.println("Bytes: " + Bytes);
+    System.out.println("Shorts: " + Shorts);
+    System.out.println("Integers: " + Integers);
+    System.out.println("Longs: " + Longs);
+    System.out.println("Floats: " + Floats);
+    System.out.println("Doubles: " + Doubles);
+
+    //* Bonus Task #9 *
+
+    ArrayList<Number> Bonus = new ArrayList<>();
+    Numbers.forEach(i -> Bonus.add(i.doubleValue() * 2));
+    System.out.println("Doubled numbers: " + Bonus);
+
+  }
+}
