@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 import java.util.Arrays;
-//import java.math.BigDecimal;
-//import java.math.RoundingMode;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 
 public class NumberOperations {
   public static void main(String[] args) {
     
     //Initialize array & Task 3
     ArrayList<Number> Numbers = new ArrayList<>(Arrays.asList(10, 20.5, 30, 40.7, 50, 60.3, 70, 80.1, 90, 100.9));    
-
+    
     //Task 1: create numbers
 
     byte n1 = 2;
@@ -16,11 +17,15 @@ public class NumberOperations {
     int n3 = 398;
     long n4 = 28937L;
     float n5 = 739.217f;
-    double n6 = 13245.9811;
+    double n6 = 13245.9881;
+    BigDecimal Big = new BigDecimal("239348597.77734513");
+    BigInteger Big1 = new BigInteger("239348598");
+    BigDecimal p = new BigDecimal(Big1);
+    System.out.println(Big.compareTo(p) > 0);
 
     //Task 2: add to the list
     
-    Numbers.addAll(Arrays.asList(n1, n2, n3, n4, n5, n6));
+    Numbers.addAll(Arrays.asList(n1, n2, n3, n4, n5, n6, Big, Big1));
 
     //Task 4: print array
 
@@ -29,7 +34,14 @@ public class NumberOperations {
     //Task 5: print integers
 
     ArrayList<Integer> Integers1 = new ArrayList<>();
-    Numbers.forEach(i -> Integers1.add((int)Math.round(i.doubleValue())));
+    for (Number i : Numbers) {
+      if (i instanceof BigDecimal) {
+        BigDecimal bigDecimalValue = (BigDecimal) i;
+          Integers1.add(bigDecimalValue.setScale(0, RoundingMode.HALF_UP).intValue());
+      } else {
+        Integers1.add((int) Math.round(i.doubleValue()));
+      }
+    }
     System.out.println("Integer Array: " + Integers1);
 
     //Task 6: print num.xx
@@ -63,6 +75,7 @@ public class NumberOperations {
     ArrayList<Long> Longs = new ArrayList<>();
     ArrayList<Float> Floats = new ArrayList<>();
     ArrayList<Double> Doubles = new ArrayList<>();
+    ArrayList<Number> BigDecimals = new ArrayList<>();
 
     for (Number i: Numbers) {
       if (i instanceof Byte) {
@@ -77,6 +90,10 @@ public class NumberOperations {
         Floats.add((Float) i);
       } else if (i instanceof Double) {
         Doubles.add((Double) i);
+      } else if (i instanceof BigDecimal) {
+        BigDecimals.add((BigDecimal) i);
+      } else if (i instanceof BigInteger) {
+        BigDecimals.add((BigInteger) i);
       }
     }
 
@@ -86,11 +103,20 @@ public class NumberOperations {
     System.out.println("Longs: " + Longs);
     System.out.println("Floats: " + Floats);
     System.out.println("Doubles: " + Doubles);
+    System.out.println("BigDecimals: " + BigDecimals);
 
     //* Bonus Task #9 *
 
     ArrayList<Number> Bonus = new ArrayList<>();
-    Numbers.forEach(i -> Bonus.add(i.doubleValue() * 2));
+    for (Number i : Numbers) {
+      if (i instanceof BigDecimal) {
+        BigDecimal result = ((BigDecimal) i).multiply(BigDecimal.valueOf(2));
+        Bonus.add(result);
+      }
+      else {
+        Bonus.add(i.doubleValue() * 2);
+      }
+    }
     System.out.println("Doubled numbers: " + Bonus);
 
   }
