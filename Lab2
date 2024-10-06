@@ -39,35 +39,40 @@ public class Warriors {
         if (choice == 1) {
             // Playing with knight
             Warrior knight = new Knight("Knight");
-            while (monster1_gameplay(monster1, knight, monster2) != 0
-                   && monster2_gameplay(monster2, knight, monster3) != 0
+            while (monster1_gameplay(monster1, knight) != 0
+                   && monster2_gameplay(monster2, knight) != 0
                    && monster3_gameplay(monster3, knight) != 0) {
-                monster1_gameplay(monster1, knight, monster2);
-                monster2_gameplay(monster2, knight, monster3);
+                monster1_gameplay(monster1, knight);
+                monster2_gameplay(monster2, knight);
                 monster3_gameplay(monster3, knight);
+                break;
             }
         } else if (choice == 2) {
             // Playing with archer
             Warrior archer = new Archer("Archer");
-            while (monster1_gameplay(monster1, archer, monster2) != 0
-                   && monster2_gameplay(monster2, archer, monster3) != 0
+            while (monster1_gameplay(monster1, archer) != 0
+                   && monster2_gameplay(monster2, archer) != 0
                    && monster3_gameplay(monster3, archer) != 0) {
-                monster1_gameplay(monster1, archer, monster2);
-                monster2_gameplay(monster2, archer, monster3);
+                monster1_gameplay(monster1, archer);
+                monster2_gameplay(monster2, archer);
                 monster3_gameplay(monster3, archer);
+                break;
             }
         } else if (choice == 3) {
             // Playing with magician
             Warrior magician = new Magician("Magician");
-            while (monster1_gameplay(monster1, magician, monster2) != 0
-                   && monster2_gameplay(monster2, magician, monster3) != 0
+            while (monster1_gameplay(monster1, magician) != 0
+                   && monster2_gameplay(monster2, magician) != 0
                    && monster3_gameplay(monster3, magician) != 0) {
-                monster1_gameplay(monster1, magician, monster2);
-                monster2_gameplay(monster2, magician, monster3);
+                monster1_gameplay(monster1, magician);
+                monster2_gameplay(monster2, magician);
                 monster3_gameplay(monster3, magician);
+                break;
             }
         }
     }
+
+
 
     // Create items and distribute them to the warrior
     Item[] items = {new Item("Weapon Update", "weapon_update"), new Item("Health Update", "health_update"), new Item("Special Power", "special_power")};
@@ -77,33 +82,30 @@ public class Warriors {
      * Gameplay against monster 1.
      * @param monster1 the first monster
      * @param warrior the warrior
-     * @param monster2 the second monster
      * @return 1 if the player wins, 0 otherwise
      */
-    public static int monster1_gameplay(Monster monster1, Warrior warrior, Monster monster2) {
+    public static int monster1_gameplay(Monster monster1, Warrior warrior) {
         gameplay(monster1, warrior);
         if (win(monster1, warrior) == 1) {
-            System.out.println("You have defeated " + monster1.name + ". Now you are playing against " + monster2.name);
+            System.out.println("You have defeated Monster Lvl 1. Now you are playing against Monster Lvl 2.");
             return 1;
         } else {
             System.out.println("You have lost");
             return 0;
         }
     }
-
     /**
      * Gameplay against monster 2.
      * @param monster2 the second monster
      * @param warrior the warrior
-     * @param monster3 the third monster
      * @return 1 if the player wins, 0 otherwise
      */
-    public static int monster2_gameplay(Monster monster2, Warrior warrior, Monster monster3) {
+    public static int monster2_gameplay(Monster monster2, Warrior warrior) {
         // Run the gameplay against the second monster
         gameplay(monster2, warrior);
         if (win(monster2, warrior) == 1) {
             // Print a message if the player wins
-            System.out.println("You have defeated " + monster2.name + ". Now you are playing against " + monster3.name);
+            System.out.println("You have defeated Monster Lvl 2. Now you are playing against Monster Lvl 3");
             return 1;
         } else {
             // Print a message if the player loses
@@ -140,7 +142,7 @@ public class Warriors {
      */
     public static int win(Monster monster, Warrior warrior) {
         // Check if the monster has no health left
-        if (monster.health < 0) {
+        if (monster.health <= 0) {
             // If the monster is defeated, the player has won
             return 1;
         }
