@@ -1,0 +1,674 @@
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.Random;
+
+public class Warriors {
+    /**
+     * This is the main method of the program. It is the entry point
+     * for the program and is responsible for initializing the game.
+     */
+    public static void main(String[] args) {
+        Scanner player = new Scanner(System.in);
+        int choice = 0;
+
+        // Loop until the player chooses a valid warrior
+        while (true) {
+            try {
+                // Ask the player which warrior they want to play with
+                System.out.println("Which warrior would you like to use: 1 - Knight, 2 - Archer, 3 - Magician: ");
+                choice = player.nextInt();
+
+                // Check if the input is valid
+                if (choice >= 1 && choice <= 3) {
+                    break;  // Exit loop if input is valid
+                } else {
+                    System.out.println("Invalid choice. Please enter a number between 1 and 3.\n------");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.\n------");
+                player.next();  // Clear the invalid input
+            }
+        }
+
+        // Initialize the monsters
+        Monster monster1 = new Monster1("Monster Lvl 1");
+        Monster monster2 = new Monster2("Monster Lvl 2");
+        Monster monster3 = new Monster3("Monster Lvl 3");
+
+        // Play the game
+        if (choice == 1) {
+            // Playing with knight
+            Warrior knight = new Knight("Knight");
+            while (monster1_gameplay(monster1, knight, monster2) != 0
+                   && monster2_gameplay(monster2, knight, monster3) != 0
+                   && monster3_gameplay(monster3, knight) != 0) {
+                monster1_gameplay(monster1, knight, monster2);
+                monster2_gameplay(monster2, knight, monster3);
+                monster3_gameplay(monster3, knight);
+            }
+        } else if (choice == 2) {
+            // Playing with archer
+            Warrior archer = new Archer("Archer");
+            while (monster1_gameplay(monster1, archer, monster2) != 0
+                   && monster2_gameplay(monster2, archer, monster3) != 0
+                   && monster3_gameplay(monster3, archer) != 0) {
+                monster1_gameplay(monster1, archer, monster2);
+                monster2_gameplay(monster2, archer, monster3);
+                monster3_gameplay(monster3, archer);
+            }
+        } else if (choice == 3) {
+            // Playing with magician
+            Warrior magician = new Magician("Magician");
+            while (monster1_gameplay(monster1, magician, monster2) != 0
+                   && monster2_gameplay(monster2, magician, monster3) != 0
+                   && monster3_gameplay(monster3, magician) != 0) {
+                monster1_gameplay(monster1, magician, monster2);
+                monster2_gameplay(monster2, magician, monster3);
+                monster3_gameplay(monster3, magician);
+            }
+        }
+    }
+
+    // Create items and distribute them to the warrior
+    Item[] items = {new Item("Weapon Update", "weapon_update"), new Item("Health Update", "health_update"), new Item("Special Power", "special_power")};
+    ItemManager itemManager = new ItemManager(items);
+
+    /**
+     * Gameplay against monster 1.
+     * @param monster1 the first monster
+     * @param warrior the warrior
+     * @param monster2 the second monster
+     * @return 1 if the player wins, 0 otherwise
+     */
+    public static int monster1_gameplay(Monster monster1, Warrior warrior, Monster monster2) {
+        gameplay(monster1, warrior);
+        if (win(monster1, warrior) == 1) {
+            System.out.println("You have defeated " + monster1.name + ". Now you are playing against " + monster2.name);
+            return 1;
+        } else {
+            System.out.println("You have lost");
+            return 0;
+        }
+    }
+
+    /**
+     * Gameplay against monster 2.
+     * @param monster2 the second monster
+     * @param warrior the warrior
+     * @param monster3 the third monster
+     * @return 1 if the player wins, 0 otherwise
+     */
+    public static int monster2_gameplay(Monster monster2, Warrior warrior, Monster monster3) {
+        // Run the gameplay against the second monster
+        gameplay(monster2, warrior);
+        if (win(monster2, warrior) == 1) {
+            // Print a message if the player wins
+            System.out.println("You have defeated " + monster2.name + ". Now you are playing against " + monster3.name);
+            return 1;
+        } else {
+            // Print a message if the player loses
+            System.out.println("You have lost");
+            return 0;
+        }
+    }
+
+    /**
+     * Gameplay against monster 3.
+     * @param monster3 the third monster
+     * @param warrior the warrior
+     * @return 1 if the player wins, 0 otherwise
+     */
+    public static int monster3_gameplay(Monster monster3, Warrior warrior) {
+        // Run the gameplay against the third monster
+        gameplay(monster3, warrior);
+        if (win(monster3, warrior) == 1) {
+            // Print a message if the player wins
+            System.out.println("You have defeated all monsters");
+            return 1;
+        } else {
+            // Print a message if the player loses
+            System.out.println("You have lost");
+            return 0;
+        }
+    }
+
+    /**
+     * Checks if the player has won the game against the given monster.
+     * @param monster the monster to check against
+     * @param warrior the warrior playing the game
+     * @return 1 if the player has won, 0 otherwise
+     */
+    public static int win(Monster monster, Warrior warrior) {
+        // Check if the monster has no health left
+        if (monster.health < 0) {
+            // If the monster is defeated, the player has won
+            return 1;
+        }
+        // If the monster still has health, the player has lost
+        return 0;
+    }
+    
+
+    /**
+     * Starts the gameplay against the given monster.
+     * @param monster the monster to play against
+     * @param warrior the warrior playing the game
+     */
+    public static void gameplay(Monster monster, Warrior warrior) {
+        // Run the gameplay until one of the warrior or the monster has no health left
+        while (monster.getHealth() > 0 && warrior.health > 0) {
+            // Create an array of items to be distributed
+            Item[] items = { new Item("Weapon Update", "weapon_update"), new Item("Health Update", "health_update"), new Item("Special Power", "special_power") };
+            // Create an item manager to distribute the items
+            ItemManager itemManager = new ItemManager(items);
+            // Distribute the items using the item manager
+            itemManager.distributeItems(warrior);   
+            // Call the inner gameplay loop
+            gameplay_inside_functions(monster, warrior);
+        }
+    }
+
+    /**
+     * This method is the inner gameplay loop.
+     * It displays the warrior's stats, asks the player to make a move and
+     * then calls the decision method to perform the move.
+     * @param monster the monster to play against
+     * @param warrior the warrior playing the game
+     */
+    public static void gameplay_inside_functions(Monster monster, Warrior warrior) {
+        // Display the warrior's stats
+        warrior.displayStats(warrior);
+        // Ask the player to make a move
+        int move = move_choice();
+        // Call the decision method to perform the move
+        decision(monster, warrior, move);
+    }
+
+    public static void decision(Monster monster, Warrior warrior, int move) {
+        if (move == 1) {
+            warrior.attack(monster, warrior);
+        } else if (move == 2) {
+            special(monster, warrior);
+        } else if (move == 3) {
+            warrior.defend(monster, warrior);
+        } else if (move == 4) {
+            warrior.rangeAttack(monster, warrior);
+        }
+    }
+
+    /**
+     * Special power method. If the warrior has more than one special power
+     * left, it will use the special power and reduce the number of special
+     * power uses by one.
+     * @param monster the monster to play against
+     * @param warrior the warrior playing the game
+     */
+    public static void special(Monster monster, Warrior warrior) {
+        // Check if the warrior has more than one special power left
+        if (warrior.specialPowerUse >= 1) {
+            // Use the special power
+            warrior.specialPower();
+            // Reduce the number of special power uses by one
+            warrior.specialPowerUse -= 1;
+        } else {
+            // Print a message if the warrior has no special power left
+            System.out.println("You have already used special power against " + monster.name);
+        }
+    }
+
+    /**
+     * This method asks the player to make a move and will loop until the input is a valid number between 1 and 4.
+     * @return the move the player has chosen
+     */
+    public static int move_choice() {
+        Scanner move = new Scanner(System.in);
+        int movement = 0;
+        while (true) {
+            try {
+                System.out.println("1) Attack, 2) Use special power, 3) Attack and defend, 4) Make ranged attack: ");
+                movement = move.nextInt();
+                if (movement >= 1 && movement <= 4) {
+                    break;  // Exit loop if input is valid
+                } else {
+                    System.out.println("Invalid input. Please enter a number between 1 and 4.\n------");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.\n------");
+                move.next();  // Clear the invalid input
+            }
+        }
+        return movement;
+    }
+    
+}
+
+interface RangeUnit {
+    void rangeAttack(Monster monster, Warrior warrior);
+}
+
+interface Armored {
+    void defend(Monster monster, Warrior warrior);
+}
+
+abstract class Warrior {
+    protected String name;
+    protected int health;
+    protected int attack;
+    protected int specialPowerUse;
+    protected int shield;
+    protected int rangeAttack;
+    protected Item[] inventory;
+    
+    public Warrior(String name, int health, int attack, int specialPowerUse, int shield, int rangeAttack) {
+        this.name = name;
+        this.attack = attack;
+        this.health = health;
+        this.specialPowerUse = specialPowerUse;
+        this.shield = shield;
+        this.rangeAttack = rangeAttack;
+        this.inventory = new Item[10];
+    }
+
+        // Add methods to manage the inventory
+        /**
+         * Adds the given item to the warrior's inventory if there is an available slot.
+         * @param item the item to add to the inventory
+         */
+        public void addItemToInventory(Item item) {
+            for (int i = 0; i < inventory.length; i++) {
+                if (inventory[i] == null) {
+                    inventory[i] = item;
+                    break;
+                }
+            }
+        }
+
+    /**
+     * Uses the item at the given index in the inventory if it exists.
+     * @param index the index of the item to use
+     */
+    public void useItem(int index) {
+        if (index >= 0 && index < inventory.length && inventory[index] != null) {
+            // Use the item and remove it from the inventory
+            inventory[index].apply(this);
+            inventory[index] = null;
+        } else {
+            System.out.println("Invalid item index or no item at this index.");
+        }
+    }
+
+    /**
+     * Performs a normal attack on the given monster.
+     * @param monster the monster to attack
+     * @param warrior the warrior doing the attack
+     */
+    public void attack(Monster monster, Warrior warrior) {
+        // Print a message indicating the attack
+        System.out.println("------\n" + name + " has attacked " + monster.getName());
+
+        // Print a message indicating the monster's counter attack
+        System.out.println(monster.getName() + " has attacked " + name + " and reduced " + monster.getAttack() + " health");
+
+        // Reduce the monster's health and the warrior's health
+        monster.reduceHealth(getAttack());
+        warrior.reduceHealth(monster.getAttack());
+
+        // Print the monster's current health
+        monster_health_check(monster);
+    }
+
+    /**
+     * Prints a message indicating the monster's current health.
+     * @param monster the monster to check the health of
+     */
+    public void monster_health_check(Monster monster) {
+        // Check if the monster's health is greater than or equal to 0
+        if (monster.health >= 0) {
+            // Print a message indicating the monster's current health
+            System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+        }
+    }
+
+    /**
+     * Displays the current stats of the warrior.
+     * @param warrior the warrior to display the stats of
+     */
+    public void displayStats(Warrior warrior) {
+        // Print a message indicating the warrior's current health
+        System.out.println("------\n" + name + " has got " + warrior.getHealth() + " health left");
+
+        // Print a message indicating the warrior's current attack power
+        System.out.println(name + " has got " + warrior.getAttack() + " attack power");
+
+        // Print a message indicating the warrior's current number of special power uses
+        System.out.println(name + " has got " + warrior.getSpecialPowerUse() + " special power left");
+
+        // Print a message indicating the warrior's current number of shields
+        System.out.println(name + " has got " + warrior.getShield() + " shields left");
+
+        // Print a message indicating the warrior's current number of ranged attacks
+        System.out.println(name + " has got " + warrior.getRangeAttack() + " ranged attacks left\n------");
+    }
+
+    public abstract void specialPower();
+
+    public abstract void defend(Monster monster, Warrior warrior);
+
+    public abstract void rangeAttack(Monster monster, Warrior warrior);
+
+    /**
+     * Prints a message indicating the warrior's successful ranged attack on the given monster.
+     * @param monster the monster to attack
+     * @param warrior the warrior doing the attack
+     */
+    public void rangeAttack_success(Monster monster, Warrior warrior) {
+        // Print a message indicating the warrior's successful ranged attack
+        System.out.println("------\n" + name + " has attacked " + monster.getName() + " from the distance");
+
+        // Print a message indicating the monster's current health
+        monster.reduceHealth(getAttack() - 70);
+        monster_health_check(monster);
+
+        // Print a message indicating the warrior's current number of ranged attacks
+        rangeAttack -= 1;
+        System.out.println(name + " used his ranged attack");
+    }
+
+    /**
+     * Prints a message indicating the warrior's successful defense against the given monster.
+     * @param monster the monster to defend against
+     * @param warrior the warrior doing the defense
+     */
+    public void defend_Success(Monster monster, Warrior warrior) {
+        // Print a message indicating the warrior's successful defense
+        System.out.println("------\n" + name + " has defended against " + monster.getName());
+
+        // Reduce the monster's health
+        monster.reduceHealth(getAttack());
+
+        // Print a message indicating the monster's current health
+        monster_health_check(monster);
+
+        // Reduce the warrior's number of shields
+        shield -= 1;
+
+        // Print a message indicating the warrior's current number of shields
+        System.out.println(name + " used his shield");
+    }
+
+    public abstract int getAttack();
+    public abstract int getHealth();
+    public abstract int getSpecialPowerUse();
+    public abstract int getShield();
+    public abstract int getRangeAttack();
+
+    public void reduceHealth(int amount) {
+        health -= amount;
+    }
+
+}
+
+class Knight extends Warrior implements Armored {
+        public Knight(String name) {
+            super(name, 950, 100, 1, 3, 0);
+        }
+
+        @Override
+        public void specialPower() {
+            System.out.println("------\n" + name + " has +50 to the attack, +1 shield and heals 200 points");
+            attack += 50;
+            health += 150;
+            shield += 1;
+        }
+
+        @Override
+        public void defend(Monster monster, Warrior warrior) {
+            if (warrior.shield > 0) {
+                defend_Success(monster, warrior);
+            }
+            else {
+                System.out.println("------\n" + name + " doesn't have any shield");
+            } 
+        }
+
+        @Override
+        public void rangeAttack(Monster monster, Warrior warrior) {
+            System.out.println("------\n" + name + " can't attack from the distance");
+        }
+
+        public int getShield() {
+            return shield;
+        }
+
+        public int getHealth() {
+            return health;
+        }
+
+        public int getAttack() {
+            return attack;
+        }
+
+        public int getRangeAttack() {
+            return rangeAttack;
+        }
+
+        public int getSpecialPowerUse() {
+            return specialPowerUse;
+        }
+
+}
+
+class Archer extends Warrior implements RangeUnit {
+        public Archer(String name) {
+            super(name, 600, 170, 1, 0, 3);
+        }
+
+        @Override
+        public void specialPower() {
+            System.out.println("------\n" + name + " has +50 to the attack, gets 1 ranged attack and heals 100 points");
+            attack += 50;
+            health += 100;
+            rangeAttack += 1;
+        }
+
+        @Override
+        public void rangeAttack(Monster monster, Warrior warrior) {
+            if (rangeAttack > 0) {
+                rangeAttack_success(monster, warrior);
+            }
+            else {
+                System.out.println("------\n" + name + " doesn't have any ranged attacks");
+            } 
+        }
+
+        @Override
+        public void defend(Monster monster, Warrior warrior){
+            System.out.println("------\n" + name + " doesn't have a shield to defend");
+        }
+
+        public int getShield() {
+            return shield;
+        }
+
+        public int getHealth() {
+            return health;
+        }
+
+        public int getAttack() {
+            return attack;
+        }
+
+        public int getRangeAttack() {
+            return rangeAttack;
+        }
+
+        public int getSpecialPowerUse() {
+            return specialPowerUse;
+        }
+
+}
+
+class Magician extends Warrior implements RangeUnit {
+    public Magician(String name) {
+        super(name, 450, 250, 2, 0, 2);
+    }
+
+    @Override
+    public void specialPower() {
+        System.out.println("------\n" + name + " has +50 to the attack, gets 1 ranged attack and heals 70 points");
+        attack += 50;
+        health += 70;
+        rangeAttack += 1;
+    }
+
+    @Override
+    public void rangeAttack(Monster monster, Warrior warrior) {
+        if (rangeAttack > 0) {
+            rangeAttack_success(monster, warrior);
+        }
+        else {
+            System.out.println("------\n" + name + " doesn't have any ranged attacks");
+        } 
+    }
+
+    @Override
+    public void defend(Monster monster, Warrior warrior){
+        System.out.println("------\n" + name + " doesn't have a shield to defend");
+    }
+
+    public int getShield() {
+        return shield;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getRangeAttack() {
+        return rangeAttack;
+    }
+
+    public int getSpecialPowerUse() {
+        return specialPowerUse;
+    }
+
+}
+
+abstract class Monster {
+    protected String name;
+    protected int health;
+    protected int attack;
+    
+    public Monster(String name, int health, int attack) {
+        this.name = name;
+        this.attack = attack;
+        this.health = health;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getHealth() {
+        return health;
+    }
+
+    public void reduceHealth(int amount) {
+        health -= amount;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+}
+
+class Monster1 extends Monster {
+    public Monster1(String name) {
+        super(name, 480, 50);
+    }
+}
+
+class Monster2 extends Monster {
+    public Monster2(String name) {
+        super(name, 1000, 80);
+    }
+}
+
+class Monster3 extends Monster {
+    public Monster3(String name) {
+        super(name, 1500, 200);
+    }
+}
+
+class Item {
+    private String name;
+    private String effect;
+
+    public Item(String name, String effect) {
+        this.name = name;
+        this.effect = effect;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getEffect() {
+        return effect;
+    }
+
+    /**
+     * Applies the effect of the item to the given warrior.
+     * @param warrior the warrior to apply the effect to
+     */
+    public void apply(Warrior warrior) {
+        switch (effect) {
+            // Increase the warrior's attack by 20
+            case "weapon_update":
+                warrior.attack += 20;
+                System.out.println("------\n" + warrior.name + " received a Weapon Update! Attack increased by 20.");
+                break;
+            // Increase the warrior's health by 50
+            case "health_update":
+                warrior.health += 50;
+                System.out.println("------\n" + warrior.name + " received a Health Update! Health increased by 50.");
+                break;
+            // Increase the warrior's special power uses by 1
+            case "special_power":
+                warrior.specialPowerUse += 1;
+                System.out.println("------\n" + warrior.name + " received a Special Power! Special power uses increased by 1.");
+                break;
+        }
+    }
+}
+
+class ItemManager {
+    private Item[] items;
+
+    public ItemManager(Item[] items) {
+        this.items = items;
+    }
+
+    /**
+     * Distributes the items in the item manager to the given warrior with a probability of 1/10.
+     * @param warrior the warrior to distribute the items to
+     */
+    public void distributeItems(Warrior warrior) {
+        Random rand = new Random();
+
+        // Loop through all the items in the item manager
+        for (Item item : items) {
+            // Generate a random number between 0 and 9
+            int rand_int = rand.nextInt(10);
+
+            // If the random number is 1, apply the effect of the item to the warrior
+            if (rand_int == 1) {
+                item.apply(warrior);
+            }
+        }
+    }
+}
