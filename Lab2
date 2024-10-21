@@ -72,8 +72,6 @@ public class Warriors {
         }
     }
 
-
-
     // Create items and distribute them to the warrior
     Item[] items = {new Item("Weapon Update", "weapon_update"), new Item("Health Update", "health_update"), new Item("Special Power", "special_power")};
     ItemManager itemManager = new ItemManager(items);
@@ -179,7 +177,7 @@ public class Warriors {
      */
     public static void gameplay_inside_functions(Monster monster, Warrior warrior) {
         // Display the warrior's stats
-        warrior.displayStats(warrior);
+        displayStats(warrior);
         // Ask the player to make a move
         int move = move_choice();
         // Call the decision method to perform the move
@@ -214,8 +212,25 @@ public class Warriors {
             warrior.specialPowerUse -= 1;
         } else {
             // Print a message if the warrior has no special power left
-            System.out.println("You have already used special power against " + monster.name);
+            System.out.println(warrior.name + " has no special power left");
         }
+    }
+
+    public static void displayStats(Warrior warrior) {
+        // Print a message indicating the warrior's current health
+        System.out.println("------\n" + warrior.name + " has got " + warrior.getHealth() + " health left");
+
+        // Print a message indicating the warrior's current attack power
+        System.out.println(warrior.name + " has got " + warrior.getAttack() + " attack power");
+
+        // Print a message indicating the warrior's current number of special power uses
+        System.out.println(warrior.name + " has got " + warrior.getSpecialPowerUse() + " special power left");
+
+        // Print a message indicating the warrior's current number of shields
+        System.out.println(warrior.name + " has got " + warrior.getShield() + " shields left");
+
+        // Print a message indicating the warrior's current number of ranged attacks
+        System.out.println(warrior.name + " has got " + warrior.getRangeAttack() + " ranged attacks left\n------");
     }
 
     /**
@@ -271,86 +286,7 @@ abstract class Warrior {
         this.inventory = new Item[10];
     }
 
-        // Add methods to manage the inventory
-        /**
-         * Adds the given item to the warrior's inventory if there is an available slot.
-         * @param item the item to add to the inventory
-         */
-        public void addItemToInventory(Item item) {
-            for (int i = 0; i < inventory.length; i++) {
-                if (inventory[i] == null) {
-                    inventory[i] = item;
-                    break;
-                }
-            }
-        }
-
-    /**
-     * Uses the item at the given index in the inventory if it exists.
-     * @param index the index of the item to use
-     */
-    public void useItem(int index) {
-        if (index >= 0 && index < inventory.length && inventory[index] != null) {
-            // Use the item and remove it from the inventory
-            inventory[index].apply(this);
-            inventory[index] = null;
-        } else {
-            System.out.println("Invalid item index or no item at this index.");
-        }
-    }
-
-    /**
-     * Performs a normal attack on the given monster.
-     * @param monster the monster to attack
-     * @param warrior the warrior doing the attack
-     */
-    public void attack(Monster monster, Warrior warrior) {
-        // Print a message indicating the attack
-        System.out.println("------\n" + name + " has attacked " + monster.getName());
-
-        // Print a message indicating the monster's counter attack
-        System.out.println(monster.getName() + " has attacked " + name + " and reduced " + monster.getAttack() + " health");
-
-        // Reduce the monster's health and the warrior's health
-        monster.reduceHealth(getAttack());
-        warrior.reduceHealth(monster.getAttack());
-
-        // Print the monster's current health
-        monster_health_check(monster);
-    }
-
-    /**
-     * Prints a message indicating the monster's current health.
-     * @param monster the monster to check the health of
-     */
-    public void monster_health_check(Monster monster) {
-        // Check if the monster's health is greater than or equal to 0
-        if (monster.health >= 0) {
-            // Print a message indicating the monster's current health
-            System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
-        }
-    }
-
-    /**
-     * Displays the current stats of the warrior.
-     * @param warrior the warrior to display the stats of
-     */
-    public void displayStats(Warrior warrior) {
-        // Print a message indicating the warrior's current health
-        System.out.println("------\n" + name + " has got " + warrior.getHealth() + " health left");
-
-        // Print a message indicating the warrior's current attack power
-        System.out.println(name + " has got " + warrior.getAttack() + " attack power");
-
-        // Print a message indicating the warrior's current number of special power uses
-        System.out.println(name + " has got " + warrior.getSpecialPowerUse() + " special power left");
-
-        // Print a message indicating the warrior's current number of shields
-        System.out.println(name + " has got " + warrior.getShield() + " shields left");
-
-        // Print a message indicating the warrior's current number of ranged attacks
-        System.out.println(name + " has got " + warrior.getRangeAttack() + " ranged attacks left\n------");
-    }
+    public abstract void attack(Monster monster, Warrior warrior);
 
     public abstract void specialPower();
 
@@ -358,55 +294,15 @@ abstract class Warrior {
 
     public abstract void rangeAttack(Monster monster, Warrior warrior);
 
-    /**
-     * Prints a message indicating the warrior's successful ranged attack on the given monster.
-     * @param monster the monster to attack
-     * @param warrior the warrior doing the attack
-     */
-    public void rangeAttack_success(Monster monster, Warrior warrior) {
-        // Print a message indicating the warrior's successful ranged attack
-        System.out.println("------\n" + name + " has attacked " + monster.getName() + " from the distance");
+    public abstract void rangeAttack_success(Monster monster, Warrior warrior);
 
-        // Print a message indicating the monster's current health
-        monster.reduceHealth(getAttack() - 70);
-        monster_health_check(monster);
-
-        // Print a message indicating the warrior's current number of ranged attacks
-        rangeAttack -= 1;
-        System.out.println(name + " used his ranged attack");
-    }
-
-    /**
-     * Prints a message indicating the warrior's successful defense against the given monster.
-     * @param monster the monster to defend against
-     * @param warrior the warrior doing the defense
-     */
-    public void defend_Success(Monster monster, Warrior warrior) {
-        // Print a message indicating the warrior's successful defense
-        System.out.println("------\n" + name + " has defended against " + monster.getName());
-
-        // Reduce the monster's health
-        monster.reduceHealth(getAttack());
-
-        // Print a message indicating the monster's current health
-        monster_health_check(monster);
-
-        // Reduce the warrior's number of shields
-        shield -= 1;
-
-        // Print a message indicating the warrior's current number of shields
-        System.out.println(name + " used his shield");
-    }
+    public abstract void defend_Success(Monster monster, Warrior warrior);
 
     public abstract int getAttack();
     public abstract int getHealth();
     public abstract int getSpecialPowerUse();
     public abstract int getShield();
     public abstract int getRangeAttack();
-
-    public void reduceHealth(int amount) {
-        health -= amount;
-    }
 
 }
 
@@ -417,10 +313,29 @@ class Knight extends Warrior implements Armored {
 
         @Override
         public void specialPower() {
-            System.out.println("------\n" + name + " has +50 to the attack, +1 shield and heals 200 points");
+            System.out.println("------\n" + name + " has +50 to the attack, +1 shield and heals 150 points");
             attack += 50;
             health += 150;
             shield += 1;
+        }
+
+        @Override
+        public void attack(Monster monster, Warrior warrior) {
+            // Print a message indicating the attack
+            System.out.println("------\n" + name + " has attacked " + monster.getName());
+
+            // Print a message indicating the monster's counter attack
+            System.out.println(monster.getName() + " has attacked " + name + " and reduced " + monster.getAttack() + " health");
+
+            // Reduce the monster's health and the warrior's health
+            monster.reduceHealth(getAttack());
+            health -= monster.getAttack();
+    
+            // Print the monster's current health
+            if (monster.health >= 0) {
+                // Print a message indicating the monster's current health
+                System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+            }
         }
 
         @Override
@@ -430,12 +345,38 @@ class Knight extends Warrior implements Armored {
             }
             else {
                 System.out.println("------\n" + name + " doesn't have any shield");
-            } 
+            }
         }
 
         @Override
         public void rangeAttack(Monster monster, Warrior warrior) {
             System.out.println("------\n" + name + " can't attack from the distance");
+        }
+
+        @Override
+        public void rangeAttack_success(Monster monster, Warrior warrior) {
+            System.out.println("------\n" + name + " can't attack from the distance");
+        }
+
+        @Override
+        public void defend_Success(Monster monster, Warrior warrior) {
+            // Print a message indicating the warrior's successful defense
+            System.out.println("------\n" + name + " has defended against " + monster.getName());
+    
+            // Reduce the monster's health
+            monster.reduceHealth(getAttack());
+    
+            // Print a message indicating the monster's current health
+            if (monster.health >= 0) {
+                // Print a message indicating the monster's current health
+                System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+            }
+    
+            // Reduce the warrior's number of shields
+            shield -= 1;
+    
+            // Print a message indicating the warrior's current number of shields
+            System.out.println(name + " used his shield");
         }
 
         public int getShield() {
@@ -466,6 +407,26 @@ class Archer extends Warrior implements RangeUnit {
         }
 
         @Override
+        public void attack(Monster monster, Warrior warrior) {
+            // Print a message indicating the attack
+            System.out.println("------\n" + name + " has attacked " + monster.getName());
+
+            // Print a message indicating the monster's counter attack
+            System.out.println(monster.getName() + " has attacked " + name + " and reduced " + monster.getAttack() + " health");
+
+            // Reduce the monster's health and the warrior's health
+            monster.reduceHealth(getAttack());
+            health -= monster.getAttack();
+    
+            // Print the monster's current health
+            if (monster.health >= 0) {
+                // Print a message indicating the monster's current health
+                System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+            }
+        }
+
+
+        @Override
         public void specialPower() {
             System.out.println("------\n" + name + " has +50 to the attack, gets 1 ranged attack and heals 100 points");
             attack += 50;
@@ -484,7 +445,29 @@ class Archer extends Warrior implements RangeUnit {
         }
 
         @Override
+        public void rangeAttack_success(Monster monster, Warrior warrior) {
+            // Print a message indicating the warrior's successful ranged attack
+            System.out.println("------\n" + name + " has attacked " + monster.getName() + " from the distance");
+    
+            // Print a message indicating the monster's current health
+            monster.reduceHealth(getAttack() - 50);
+            if (monster.health >= 0) {
+                // Print a message indicating the monster's current health
+                System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+            }
+    
+            // Print a message indicating the warrior's current number of ranged attacks
+            rangeAttack -= 1;
+            System.out.println(name + " used his ranged attack");
+        }
+
+        @Override
         public void defend(Monster monster, Warrior warrior){
+            System.out.println("------\n" + name + " doesn't have a shield to defend");
+        }
+
+        @Override
+        public void defend_Success(Monster monster, Warrior warrior) {
             System.out.println("------\n" + name + " doesn't have a shield to defend");
         }
 
@@ -516,6 +499,25 @@ class Magician extends Warrior implements RangeUnit {
     }
 
     @Override
+    public void attack(Monster monster, Warrior warrior) {
+        // Print a message indicating the attack
+        System.out.println("------\n" + name + " has attacked " + monster.getName());
+
+        // Print a message indicating the monster's counter attack
+        System.out.println(monster.getName() + " has attacked " + name + " and reduced " + monster.getAttack() + " health");
+
+        // Reduce the monster's health and the warrior's health
+        monster.reduceHealth(getAttack());
+        health -= monster.getAttack();
+
+        // Print the monster's current health
+        if (monster.health >= 0) {
+            // Print a message indicating the monster's current health
+            System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+        }
+    }
+
+    @Override
     public void specialPower() {
         System.out.println("------\n" + name + " has +50 to the attack, gets 1 ranged attack and heals 70 points");
         attack += 50;
@@ -534,9 +536,31 @@ class Magician extends Warrior implements RangeUnit {
     }
 
     @Override
+        public void rangeAttack_success(Monster monster, Warrior warrior) {
+            // Print a message indicating the warrior's successful ranged attack
+            System.out.println("------\n" + name + " has attacked " + monster.getName() + " from the distance");
+    
+            // Print a message indicating the monster's current health
+            monster.reduceHealth(getAttack() - 70);
+            if (monster.health >= 0) {
+                // Print a message indicating the monster's current health
+                System.out.println(monster.getName() + " now has " + monster.getHealth() + " health left");
+            }
+    
+            // Print a message indicating the warrior's current number of ranged attacks
+            rangeAttack -= 1;
+            System.out.println(name + " used his ranged attack");
+        }
+
+    @Override
     public void defend(Monster monster, Warrior warrior){
         System.out.println("------\n" + name + " doesn't have a shield to defend");
     }
+
+    @Override
+        public void defend_Success(Monster monster, Warrior warrior) {
+            System.out.println("------\n" + name + " doesn't have a shield to defend");
+        }
 
     public int getShield() {
         return shield;
@@ -560,7 +584,7 @@ class Magician extends Warrior implements RangeUnit {
 
 }
 
-abstract class Monster {
+class Monster {
     protected String name;
     protected int health;
     protected int attack;
