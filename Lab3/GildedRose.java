@@ -28,9 +28,8 @@ class GildedRose {
             updateQualityForBackstage(item);
         } else if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
             return;
-        } else if (item.quality > 0) {
-            item.quality--;
         }
+        decreaseQualityByOne(item);
     }
 
     private void updateQualityForBackstage(Item item) {
@@ -63,10 +62,14 @@ class GildedRose {
             item.quality = 0;
         } else {
             if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                if (item.quality > 0) {
-                    item.quality--;
-                }
+                decreaseQualityByOne(item);
             }
+        }
+    }
+
+    private void decreaseQualityByOne(Item item) {
+        if (item.quality > 0) {
+            item.quality--;
         }
     }
 }
