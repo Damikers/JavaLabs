@@ -16,9 +16,13 @@ class GildedRose {
     private void updateItem(Item item) {
         updateQuality(item);
         updateSellIn(item);
-        if (item.sellIn < 0) {
+        if (isSellIn(item)) {
             processSellIn(item);
         }
+    }
+
+    private boolean isSellIn(Item item) {
+        return item.sellIn < 0;
     }
 
     private void processSellIn(Item item) {
