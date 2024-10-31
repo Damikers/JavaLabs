@@ -38,14 +38,14 @@ class GildedRose {
     private void updateQualityForBackstage(Item item) {
         if (item.quality < 50) {
             item.quality = item.quality + 1;
+        }
 
-            if (item.sellIn < 11) {
-                item.increaseQualityByOne();
-            }
+        if (item.sellIn < 11) {
+            item.increaseQualityByOne();
+        }
 
-            if (item.sellIn < 6) {
-                item.increaseQualityByOne();
-            }
+        if (item.sellIn < 6) {
+            item.increaseQualityByOne();
         }
     }
 
