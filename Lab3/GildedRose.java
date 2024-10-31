@@ -29,7 +29,7 @@ class GildedRose {
         } else if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
             return;
         } else if (item.quality > 0) {
-            item.quality = item.quality - 1;
+            item.quality --;
         }
     }
 
@@ -46,9 +46,10 @@ class GildedRose {
     }
 
     private void updateSellIn(Item item) {
-        if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-            item.sellIn = item.sellIn - 1;
+        if (item.name.equals("Sulfuras, Hand of Ragnaros")) {
+            return;
         }
+        item.sellIn --;
     }
 
     private boolean isSellIn(Item item) {
@@ -60,7 +61,7 @@ class GildedRose {
             if (!item.name.equals("Backstage passes to a TAFKAL80ETC concert")) {
                 if (item.quality > 0) {
                     if (!item.name.equals("Sulfuras, Hand of Ragnaros")) {
-                        item.quality = item.quality - 1;
+                        item.quality --;
                     }
                 }
             } else {
