@@ -1,7 +1,7 @@
-// package com.gildedrose;
+package com.gildedrose;
 
 class GildedRose {
-    Item[] items;
+    private final Item[] items;
 
     public GildedRose(Item[] items) {
         this.items = items;
@@ -16,31 +16,31 @@ class GildedRose {
     private void updateItem(Item item) {
         updateQuality(item);
         updateSellIn(item);
-        if (isSellIn(item)) {
+        if (item.sellInValueLessThan(0)) {
             processSellIn(item);
         }
     }
 
     private void updateQuality(Item item) {
         if (isBrie(item)) {
-            item.increaseQualityByOne();
+            item.increaseQuality();
         } else if (isBackstage(item)) {
             updateQualityForBackstage(item);
         } else if (isSulfuras(item)) {
             return;
         }
-        item.decreaseQualityByOne();
+        item.decreaseQuality();
     }
 
     private void updateQualityForBackstage(Item item) {
-        item.increaseQualityByOne();
+        item.increaseQuality();
 
-        if (item.sellIn < 11) {
-            item.increaseQualityByOne();
+        if (item.sellInValueLessThan(11)) {
+            item.increaseQuality();
         }
 
-        if (item.sellIn < 6) {
-            item.increaseQualityByOne();
+        if (item.sellInValueLessThan(6)) {
+            item.increaseQuality();
         }
     }
 
@@ -48,32 +48,28 @@ class GildedRose {
         if (isSulfuras(item)) {
             return;
         }
-        item.sellIn--;
-    }
-
-    private boolean isSellIn(Item item) {
-        return item.sellIn < 0;
+        item.decreaseSellIn();
     }
 
     private void processSellIn(Item item) {
         if (isBrie(item)) {
-            item.increaseQualityByOne();
+            item.increaseQuality();
         } else if (isBackstage(item)) {
-            item.quality = 0;
+            item.resetQuality();
         } else if (!isSulfuras(item)) {
-            item.decreaseQualityByOne();
+            item.decreaseQuality();
         }
     }
 
     private boolean isSulfuras(Item item) {
-        return item.name.equals("Sulfuras, Hand of Ragnaros");
+        return item.isNamed("Sulfuras, Hand of Ragnaros");
     }
 
     private boolean isBackstage(Item item) {
-        return item.name.equals("Backstage passes to a TAFKAL80ETC concert");
+        return item.isNamed("Backstage passes to a TAFKAL80ETC concert");
     }
 
     private boolean isBrie(Item item) {
-        return item.name.equals("Aged Brie");
+        return item.isNamed("Aged Brie");
     }
 }
