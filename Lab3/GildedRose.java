@@ -60,10 +60,8 @@ class GildedRose {
             item.increaseQualityByOne();
         } else if (isBackstage(item)) {
             item.quality = 0;
-        } else {
-            if (!isSulfuras(item)) {
-                item.decreaseQualityByOne();
-            }
+        } else if (!isSulfuras(item)) {
+            item.decreaseQualityByOne();
         }
     }
 
